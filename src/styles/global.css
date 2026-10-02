@@ -202,3 +202,270 @@ select:focus {
     transition-duration: 0.01ms !important;
   }
   }
+.dashboard-alert {
+  margin: -8px 0 20px;
+}
+
+.dashboard-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(20, 110, 245, 0.10),
+      rgba(17, 23, 32, 0.92) 48%
+    );
+}
+
+.dashboard-intro h2 {
+  margin: 6px 0 7px;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-intro p {
+  max-width: 650px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.workspace-status {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  background: rgba(20, 110, 245, 0.07);
+}
+
+.workspace-status strong,
+.workspace-status small {
+  display: block;
+}
+
+.workspace-status strong {
+  font-size: 12px;
+}
+
+.workspace-status small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(20, 110, 245, 0.10);
+}
+
+.dashboard-stats {
+  margin-bottom: 18px;
+}
+
+.dashboard-stat {
+  gap: 7px;
+}
+
+.stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #A9C9FF;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+}
+
+.stat-arrow {
+  color: #536174;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.dashboard-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
+  gap: 18px;
+}
+
+.dashboard-activity {
+  min-width: 0;
+}
+
+.panel-count {
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: #8391A3;
+  background: #0D141C;
+  border: 1px solid var(--line);
+  font-size: 10px;
+}
+
+.activity-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: 9px;
+}
+
+.activity .dot {
+  display: none;
+}
+
+.activity strong {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.activity small {
+  font-size: 10px;
+}
+
+.dashboard-side {
+  display: grid;
+  gap: 18px;
+}
+
+.foundation-card,
+.workflow-card {
+  min-width: 0;
+}
+
+.foundation-card p,
+.workflow-card p {
+  color: #AEB8C5;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.foundation-items {
+  display: grid;
+  gap: 7px;
+  margin: 18px 0;
+}
+
+.foundation-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0D141C;
+}
+
+.foundation-item:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.foundation-item span {
+  color: #9AA6B5;
+  font-size: 11px;
+}
+
+.foundation-item strong {
+  font-size: 13px;
+}
+
+.foundation-item svg {
+  color: #617087;
+}
+
+.dashboard-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 13px;
+  border-radius: 10px;
+  color: #DCEAFF;
+  background: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dashboard-action:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.workflow-card .workflow {
+  margin-bottom: 0;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-side {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-intro {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .workspace-status {
+    width: 100%;
+  }
+
+  .dashboard-side {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-intro h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 390px) {
+  .dashboard-intro {
+    padding: 17px;
+  }
+
+  .stat-top {
+    margin-bottom: 2px;
+  }
+
+  .stat strong {
+    font-size: 30px;
+  }
+           }
