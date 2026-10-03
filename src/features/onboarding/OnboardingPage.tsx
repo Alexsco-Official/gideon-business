@@ -745,7 +745,15 @@ export function OnboardingPage() {
                 <button
                   type="button"
                   className="primary onboarding-next"
-                  onClick={next}
+                  onClick={() => {
+  if (step === 2 && !name.trim()) {
+    setError('Please enter your business name.');
+    return;
+  }
+
+  setError('');
+  next();
+}}
                 >
                   Continue
                   <span>→</span>
