@@ -1,4 +1,10 @@
-import { FormEvent, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { errorMessage, getCurrentContext } from '../../lib/api';
@@ -202,7 +208,7 @@ export function OnboardingPage() {
 
   function toggleArrayValue(
     value: string,
-    setter: React.Dispatch<React.SetStateAction<string[]>>
+    setter: Dispatch<SetStateAction<string[]>>
   ) {
     setter((current) =>
       current.includes(value)
