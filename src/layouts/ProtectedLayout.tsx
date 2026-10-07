@@ -41,6 +41,12 @@ const links = [
     icon: KnowledgeIcon,
   },
   {
+    to: '/records',
+    label: 'Records',
+    description: 'Sales, expenses & payments',
+    icon: RecordsIcon,
+  },
+  {
     to: '/settings',
     label: 'Settings',
     description: 'Workspace settings',
@@ -149,7 +155,10 @@ export function ProtectedLayout() {
           WORKSPACE
         </div>
 
-        <nav className="sidebar-nav" aria-label="Main navigation">
+        <nav
+          className="sidebar-nav"
+          aria-label="Main navigation"
+        >
           {links.map((item) => {
             const Icon = item.icon;
 
@@ -388,6 +397,33 @@ function KnowledgeIcon({
       />
       <path
         d="M5 20.5A2.5 2.5 0 0 1 7.5 18H19M9 7h6M9 10.5h6"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function RecordsIcon({
+  size = 19,
+}: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 7h16v13H4z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 7V5h8v2M8 12h8M8 16h5"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinecap="round"
