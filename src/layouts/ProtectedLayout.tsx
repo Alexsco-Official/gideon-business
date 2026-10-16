@@ -59,6 +59,12 @@ const links = [
     icon: ProductsIcon,
   },
   {
+  to: '/inventory',
+  label: 'Inventory',
+  description: 'Stock levels & movements',
+  icon: InventoryIcon,
+},
+  {
     to: '/settings',
     label: 'Settings',
     description: 'Workspace settings',
@@ -475,6 +481,41 @@ function ProductsIcon({
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function InventoryIcon({
+  size = 19,
+}: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M4.5 7.8 12 12l7.5-4.2M12 12v9"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M8.5 5l8 4.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );
