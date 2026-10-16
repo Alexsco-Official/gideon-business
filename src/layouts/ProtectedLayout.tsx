@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import {
+  NavLink,
+  Outlet,
+  useNavigate,
+} from 'react-router-dom';
+
 import { useAuth } from '../features/auth/AuthContext';
 import {
   getCurrentContext,
   errorMessage,
 } from '../lib/api';
 import { supabase } from '../lib/supabase';
+
 import type {
   Business,
   Profile,
@@ -45,6 +51,12 @@ const links = [
     label: 'Records',
     description: 'Sales, expenses & payments',
     icon: RecordsIcon,
+  },
+  {
+    to: '/products',
+    label: 'Products',
+    description: 'Products & services',
+    icon: ProductsIcon,
   },
   {
     to: '/settings',
@@ -286,6 +298,7 @@ function DashboardIcon({
         stroke="currentColor"
         strokeWidth="1.7"
       />
+
       <rect
         x="14"
         y="4"
@@ -295,6 +308,7 @@ function DashboardIcon({
         stroke="currentColor"
         strokeWidth="1.7"
       />
+
       <rect
         x="4"
         y="14"
@@ -304,6 +318,7 @@ function DashboardIcon({
         stroke="currentColor"
         strokeWidth="1.7"
       />
+
       <rect
         x="14"
         y="14"
@@ -335,12 +350,14 @@ function LeadsIcon({
         stroke="currentColor"
         strokeWidth="1.7"
       />
+
       <path
         d="M3.5 19a5.5 5.5 0 0 1 11 0"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinecap="round"
       />
+
       <path
         d="M16 8h5M18.5 5.5v5"
         stroke="currentColor"
@@ -368,6 +385,7 @@ function ConversationsIcon({
         strokeWidth="1.7"
         strokeLinejoin="round"
       />
+
       <path
         d="M9 11.5h.01M12 11.5h.01M15 11.5h.01"
         stroke="currentColor"
@@ -395,6 +413,7 @@ function KnowledgeIcon({
         strokeWidth="1.7"
         strokeLinejoin="round"
       />
+
       <path
         d="M5 20.5A2.5 2.5 0 0 1 7.5 18H19M9 7h6M9 10.5h6"
         stroke="currentColor"
@@ -422,11 +441,40 @@ function RecordsIcon({
         strokeWidth="1.7"
         strokeLinejoin="round"
       />
+
       <path
         d="M8 7V5h8v2M8 12h8M8 16h5"
         stroke="currentColor"
         strokeWidth="1.7"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ProductsIcon({
+  size = 19,
+}: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="m4.5 7.8 7.5 4.2 7.5-4.2M12 12v9"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -450,6 +498,7 @@ function SettingsIcon({
         stroke="currentColor"
         strokeWidth="1.7"
       />
+
       <path
         d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 15a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2A1.7 1.7 0 0 0 8.46 10a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.73 5.2V5h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 10a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15Z"
         stroke="currentColor"
@@ -478,6 +527,7 @@ function LogoutIcon({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+
       <path
         d="M4 12h10M11 8l4 4-4 4"
         stroke="currentColor"
