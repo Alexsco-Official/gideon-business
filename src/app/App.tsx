@@ -1,12 +1,24 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 
 import { AuthProvider } from '../features/auth/AuthContext';
-import { LoginPage, SignupPage } from '../features/auth/AuthPages';
-import { ConversationsPage, ConversationDetailPage } from '../features/conversations/ConversationsPage';
+import {
+  LoginPage,
+  SignupPage,
+} from '../features/auth/AuthPages';
+import {
+  ConversationsPage,
+  ConversationDetailPage,
+} from '../features/conversations/ConversationsPage';
 import { DashboardPage } from '../features/dashboard/DashboardPage';
 import { KnowledgePage } from '../features/knowledge/KnowledgePage';
 import { LeadsPage } from '../features/leads/LeadsPage';
 import { OnboardingPage } from '../features/onboarding/OnboardingPage';
+import { ProductsPage } from '../features/products/ProductsPage';
 import { RecordsPage } from '../features/records/RecordsPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 
@@ -63,6 +75,11 @@ export default function App() {
             <Route
               path="/records"
               element={<RecordsPage />}
+            />
+
+            <Route
+              path="/products"
+              element={<ProductsPage />}
             />
 
             <Route
