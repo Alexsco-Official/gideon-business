@@ -23,6 +23,7 @@ import { RecordsPage } from '../features/records/RecordsPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 
 import { ProtectedLayout } from '../layouts/ProtectedLayout';
+import { InventoryPage } from '../features/inventory/InventoryPage';
 
 export default function App() {
   return (
@@ -81,6 +82,11 @@ export default function App() {
               path="/products"
               element={<ProductsPage />}
             />
+
+            <Route
+  path="/inventory"
+  element={<InventoryPage />}
+/>
 
             <Route
               path="/settings"
