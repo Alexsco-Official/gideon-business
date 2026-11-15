@@ -17,7 +17,7 @@
 .inventory-eyebrow {
   display: inline-block;
   margin-bottom: 8px;
-  color: #146ef5;
+  color: var(--accent-text);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -25,7 +25,7 @@
 
 .inventory-header h1 {
   margin: 0;
-  color: #111827;
+  color: var(--text);
   font-size: clamp(28px, 4vw, 38px);
   line-height: 1.08;
   letter-spacing: -0.035em;
@@ -34,7 +34,7 @@
 .inventory-header p {
   max-width: 680px;
   margin: 10px 0 0;
-  color: #667085;
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.65;
 }
