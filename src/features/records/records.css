@@ -18,7 +18,7 @@
   max-width: 720px;
 }
 
-.eyebrow {
+.records-page .eyebrow {
   display: inline-block;
   margin-bottom: 8px;
   color: #667085;
@@ -327,7 +327,7 @@
   font-size: 13px;
 }
 
-.loader {
+.records-page .loader {
   width: 24px;
   height: 24px;
   border: 2px solid #e4e7ec;
@@ -381,7 +381,7 @@
   overflow-y: auto;
 }
 
-.modal-head {
+.records-modal .modal-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -389,20 +389,20 @@
   margin-bottom: 24px;
 }
 
-.modal-head h2 {
+.records-modal .modal-head h2 {
   margin: 0;
   font-size: 24px;
   letter-spacing: -0.03em;
 }
 
-.modal-head p {
+.records-modal .modal-head p {
   margin: 8px 0 0;
   color: #667085;
   font-size: 13px;
   line-height: 1.55;
 }
 
-.icon-button {
+.records-modal .icon-button {
   width: 34px;
   height: 34px;
   flex-shrink: 0;
@@ -415,7 +415,7 @@
   cursor: pointer;
 }
 
-.icon-button:hover {
+.records-modal .icon-button:hover {
   background: #f9fafb;
   color: #101828;
 }
@@ -544,7 +544,7 @@
     max-height: calc(100vh - 24px);
   }
 
-  .modal-head {
+  .records-modal .modal-head {
     margin-bottom: 20px;
   }
 
@@ -565,7 +565,22 @@
     transition: none;
   }
 
-  .loader {
+  .records-page .loader {
     animation: none;
   }
   }
+
+/* The page header sits on the dark app background, so it uses the
+   app's light text colors instead of the dark ones used inside the
+   white cards below it. */
+.records-header h1 {
+  color: var(--text);
+}
+
+.records-header p {
+  color: var(--muted);
+}
+
+.records-header .eyebrow {
+  color: var(--accent-text);
+}
