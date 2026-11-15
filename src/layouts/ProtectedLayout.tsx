@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   NavLink,
   Outlet,
+  useLocation,
   useNavigate,
 } from 'react-router-dom';
 
@@ -16,6 +17,8 @@ import type {
   Business,
   Profile,
 } from '../types/database';
+
+import './mobile-nav.css';
 
 type IconProps = {
   size?: number;
@@ -72,6 +75,23 @@ const links = [
   },
 ];
 
+// On phones the bottom bar shows the main tabs. Everything else lives
+// under "More", so no page is ever hidden as the product grows.
+const primaryPaths = [
+  '/dashboard',
+  '/records',
+  '/products',
+  '/inventory',
+];
+
+const primaryLinks = links.filter((item) =>
+  primaryPaths.includes(item.to),
+);
+
+const moreLinks = links.filter(
+  (item) => !primaryPaths.includes(item.to),
+);
+
 export function ProtectedLayout() {
   const {
     session,
@@ -79,6 +99,15 @@ export function ProtectedLayout() {
   } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // The "More" sheet is open only for the page it was opened on, so it
+  // closes by itself whenever the route changes.
+  const [moreOpenPath, setMoreOpenPath] = useState<
+    string | null
+  >(null);
+
+  const moreOpen = moreOpenPath === location.pathname;
 
   const [ctx, setCtx] = useState<{
     business: Business;
@@ -125,6 +154,24 @@ export function ProtectedLayout() {
     navigate,
   ]);
 
+  useEffect(() => {
+    if (!moreOpen) {
+      return;
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setMoreOpenPath(null);
+      }
+    }
+
+    window.addEventListener('keydown', closeOnEscape);
+
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [moreOpen]);
+
   if (loading || !ctx) {
     return (
       <main className="center">
@@ -146,6 +193,12 @@ export function ProtectedLayout() {
       replace: true,
     });
   }
+
+  const moreActive = moreLinks.some(
+    (item) =>
+      location.pathname === item.to ||
+      location.pathname.startsWith(item.to + '/'),
+  );
 
   const initials =
     ctx.business.name
@@ -258,16 +311,17 @@ export function ProtectedLayout() {
       </main>
 
       <nav
-        className="mobile-nav"
+        className="mobile-nav mobile-nav-v2"
         aria-label="Mobile navigation"
       >
-        {links.map((item) => {
+        {primaryLinks.map((item) => {
           const Icon = item.icon;
 
           return (
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={() => setMoreOpenPath(null)}
               className={({ isActive }) =>
                 isActive
                   ? 'mobile-nav-item active'
@@ -279,7 +333,68 @@ export function ProtectedLayout() {
             </NavLink>
           );
         })}
+
+        <button
+          type="button"
+          className={
+            moreActive || moreOpen
+              ? 'mobile-nav-item active'
+              : 'mobile-nav-item'
+          }
+          aria-expanded={moreOpen}
+          aria-controls="mobile-more-menu"
+          onClick={() =>
+            setMoreOpenPath(
+              moreOpen ? null : location.pathname,
+            )
+          }
+        >
+          <MoreIcon />
+          <span>More</span>
+        </button>
       </nav>
+
+      {moreOpen && (
+        <>
+          <div
+            className="mobile-more-backdrop"
+            onClick={() => setMoreOpenPath(null)}
+          />
+
+          <div
+            id="mobile-more-menu"
+            className="mobile-more-sheet"
+            role="dialog"
+            aria-label="More menu"
+          >
+            {moreLinks.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMoreOpenPath(null)}
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'mobile-more-item active'
+                      : 'mobile-more-item'
+                  }
+                >
+                  <span className="mobile-more-icon">
+                    <Icon />
+                  </span>
+
+                  <span className="mobile-more-copy">
+                    <strong>{item.label}</strong>
+                    <small>{item.description}</small>
+                  </span>
+                </NavLink>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -576,6 +691,24 @@ function LogoutIcon({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function MoreIcon({
+  size = 18,
+}: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="6" cy="12" r="1.6" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+      <circle cx="18" cy="12" r="1.6" fill="currentColor" />
     </svg>
   );
 }
