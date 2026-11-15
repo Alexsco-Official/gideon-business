@@ -72,7 +72,12 @@ function Icon({
   if (name === 'plus') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
-        <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <path
+          d="M12 5v14M5 12h14"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
       </svg>
     );
   }
@@ -80,8 +85,19 @@ function Icon({
   if (name === 'search') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
-        <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" strokeWidth="1.8" />
-        <path d="m16 16 4.2 4.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <circle
+          cx="10.8"
+          cy="10.8"
+          r="6.8"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="m16 16 4.2 4.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
       </svg>
     );
   }
@@ -89,7 +105,13 @@ function Icon({
   if (name === 'arrow') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
-        <path d="M5 12h13M13 7l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M5 12h13M13 7l5 5-5 5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     );
   }
@@ -97,8 +119,18 @@ function Icon({
   if (name === 'sale') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
-        <path d="M4 7.5 7.5 4h9L20 7.5v9L16.5 20h-9L4 16.5v-9Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        <path d="M8 10h8M8 14h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <path
+          d="M4 7.5 7.5 4h9L20 7.5v9L16.5 20h-9L4 16.5v-9Z"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 10h8M8 14h5"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
       </svg>
     );
   }
@@ -106,16 +138,37 @@ function Icon({
   if (name === 'expense') {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
-        <path d="M4 7h16v13H4z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        <path d="M8 7V5h8v2M8 12h8M8 16h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <path
+          d="M4 7h16v13H4z"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 7V5h8v2M8 12h8M8 16h5"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
       </svg>
     );
   }
 
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <circle
+        cx="12"
+        cy="12"
+        r="8.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      />
+      <path
+        d="M12 7v5l3 2"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -132,10 +185,13 @@ export function RecordsPage() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+
   const [kind, setKind] = useState<RecordKind>('sale');
   const [open, setOpen] = useState(false);
+
   const [search, setSearch] = useState('');
   const [busy, setBusy] = useState(false);
+  const today = new Date().toLocaleDateString('en-CA');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -144,25 +200,32 @@ export function RecordsPage() {
     setError('');
 
     try {
-      const [salesResult, expensesResult, transactionsResult] = await Promise.all([
-        supabase
-          .from('sales')
-          .select('id, customer_name, sale_number, status, sale_date, total, notes')
-          .order('sale_date', { ascending: false })
-          .limit(50),
+      const [salesResult, expensesResult, transactionsResult] =
+        await Promise.all([
+          supabase
+            .from('sales')
+            .select(
+              'id, customer_name, sale_number, status, sale_date, total, notes',
+            )
+            .order('sale_date', { ascending: false })
+            .limit(50),
 
-        supabase
-          .from('expenses')
-          .select('id, category, description, amount, expense_date, payment_status')
-          .order('expense_date', { ascending: false })
-          .limit(50),
+          supabase
+            .from('expenses')
+            .select(
+              'id, category, description, amount, expense_date, payment_status',
+            )
+            .order('expense_date', { ascending: false })
+            .limit(50),
 
-        supabase
-          .from('transactions')
-          .select('id, transaction_type, amount, transaction_date, category, payment_method, reference, notes')
-          .order('transaction_date', { ascending: false })
-          .limit(50),
-      ]);
+          supabase
+            .from('transactions')
+            .select(
+              'id, transaction_type, amount, transaction_date, category, payment_method, reference, notes',
+            )
+            .order('transaction_date', { ascending: false })
+            .limit(50),
+        ]);
 
       if (salesResult.error) throw salesResult.error;
       if (expensesResult.error) throw expensesResult.error;
@@ -179,7 +242,7 @@ export function RecordsPage() {
   }
 
   useEffect(() => {
-    void load();
+    load();
   }, []);
 
   const timeline = useMemo<TimelineItem[]>(() => {
@@ -212,17 +275,20 @@ export function RecordsPage() {
       subtitle: transaction.category,
       amount: Number(transaction.amount),
       date: transaction.transaction_date,
-      direction: transaction.transaction_type === 'income' ? 'in' : 'out',
+      direction:
+        transaction.transaction_type === 'income' ? 'in' : 'out',
       meta: transaction.payment_method || transaction.transaction_type,
     }));
 
     return [...saleItems, ...expenseItems, ...paymentItems].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      (a, b) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
   }, [sales, expenses, transactions]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
+
     if (!q) return timeline;
 
     return timeline.filter((item) =>
@@ -234,8 +300,15 @@ export function RecordsPage() {
   }, [timeline, search]);
 
   const totals = useMemo(() => {
-    const salesTotal = sales.reduce((sum, item) => sum + Number(item.total), 0);
-    const expensesTotal = expenses.reduce((sum, item) => sum + Number(item.amount), 0);
+    const salesTotal = sales.reduce(
+      (sum, item) => sum + Number(item.total),
+      0,
+    );
+
+    const expensesTotal = expenses.reduce(
+      (sum, item) => sum + Number(item.amount),
+      0,
+    );
 
     const income = transactions
       .filter((item) => item.transaction_type === 'income')
@@ -262,17 +335,26 @@ export function RecordsPage() {
 
   async function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     setBusy(true);
     setError('');
 
     try {
       const form = new FormData(e.currentTarget);
-      const dateValue = String(form.get('date') || '');
-      const date = dateValue ? new Date(dateValue).toISOString() : new Date().toISOString();
 
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const dateValue = String(form.get('date') || '');
+      const date = dateValue
+        ? new Date(dateValue).toISOString()
+        : new Date().toISOString();
+
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+
       if (userError) throw userError;
-      if (!userData.user) throw new Error('Session expired. Please sign in again.');
+
+      if (!userData.user) {
+        throw new Error('Session expired. Please sign in again.');
+      }
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -281,102 +363,110 @@ export function RecordsPage() {
         .single();
 
       if (profileError) throw profileError;
-      if (!profile?.business_id) throw new Error('Your business profile could not be found.');
 
       if (kind === 'sale') {
-        const customerName = String(form.get('customer_name') || '').trim() || null;
-        const description = String(form.get('description') || '').trim();
+        const customerName =
+          String(form.get('customer_name') || '').trim() || null;
+
+        const description = String(
+          form.get('description') || '',
+        ).trim();
+
         const quantity = Number(form.get('quantity') || 1);
         const unitPrice = Number(form.get('unit_price') || 0);
-        const total = quantity * unitPrice;
 
-        if (!description) throw new Error('Enter what was sold.');
+        if (!description) {
+          throw new Error('Enter what was sold.');
+        }
+
         if (!Number.isFinite(quantity) || quantity <= 0) {
           throw new Error('Quantity must be greater than zero.');
         }
+
         if (!Number.isFinite(unitPrice) || unitPrice < 0) {
           throw new Error('Enter a valid selling price.');
         }
-        if (!Number.isFinite(total)) throw new Error('The sale total is invalid.');
 
-        const { data: sale, error: saleError } = await supabase
-          .from('sales')
-          .insert({
-            business_id: profile.business_id,
-            customer_name: customerName,
-            status: 'completed',
-            sale_date: date,
-            subtotal: total,
-            discount: 0,
-            total,
-            notes: String(form.get('notes') || '').trim() || null,
-          })
-          .select('id')
-          .single();
-
-        if (saleError) throw saleError;
-
-        const { error: itemError } = await supabase.from('sale_items').insert({
-          sale_id: sale.id,
-          description,
-          quantity,
-          unit_price: unitPrice,
-          line_total: total,
+        // The database works out the totals and saves the sale and its
+        // items together, so a failure never leaves a half-saved sale.
+        const { error: saleError } = await supabase.rpc('record_sale', {
+          p_items: [
+            { description, quantity, unit_price: unitPrice },
+          ],
+          p_customer_name: customerName,
+          p_sale_date: date,
+          p_notes: String(form.get('notes') || '').trim() || null,
         });
 
-        if (itemError) {
-          // Remove the parent sale if its line item could not be saved.
-          await supabase.from('sales').delete().eq('id', sale.id);
-          throw itemError;
-        }
+        if (saleError) throw saleError;
       }
 
       if (kind === 'expense') {
         const amount = Number(form.get('amount') || 0);
-        const description = String(form.get('description') || '').trim();
 
-        if (!description) throw new Error('Enter what the expense was for.');
-        if (!Number.isFinite(amount) || amount <= 0) {
-          throw new Error('Enter an expense amount greater than zero.');
+        const description = String(
+          form.get('description') || '',
+        ).trim();
+
+        if (!description) {
+          throw new Error('Enter what the expense was for.');
         }
 
-        const { error: expenseError } = await supabase.from('expenses').insert({
+        if (!Number.isFinite(amount) || amount <= 0) {
+          throw new Error(
+            'Enter an expense amount greater than zero.',
+          );
+        }
+
+        const { error } = await supabase.from('expenses').insert({
           business_id: profile.business_id,
           category: String(form.get('category') || 'general'),
           description,
           amount,
           expense_date: date,
-          payment_status: String(form.get('payment_status') || 'paid'),
-          payment_method: String(form.get('payment_method') || '').trim() || null,
-          notes: String(form.get('notes') || '').trim() || null,
+          payment_status: String(
+            form.get('payment_status') || 'paid',
+          ),
+          payment_method:
+            String(form.get('payment_method') || '').trim() || null,
+          notes:
+            String(form.get('notes') || '').trim() || null,
         });
 
-        if (expenseError) throw expenseError;
+        if (error) throw error;
       }
 
       if (kind === 'payment') {
         const amount = Number(form.get('amount') || 0);
-        const transactionType = String(form.get('transaction_type') || 'income');
 
         if (!Number.isFinite(amount) || amount <= 0) {
-          throw new Error('Enter a payment amount greater than zero.');
-        }
-        if (transactionType !== 'income' && transactionType !== 'expense') {
-          throw new Error('Select a valid payment type.');
+          throw new Error(
+            'Enter a payment amount greater than zero.',
+          );
         }
 
-        const { error: transactionError } = await supabase.from('transactions').insert({
-          business_id: profile.business_id,
-          transaction_type: transactionType,
-          amount,
-          transaction_date: date,
-          category: String(form.get('category') || 'general'),
-          payment_method: String(form.get('payment_method') || '').trim() || null,
-          reference: String(form.get('reference') || '').trim() || null,
-          notes: String(form.get('notes') || '').trim() || null,
-        });
+        const { error } = await supabase
+          .from('transactions')
+          .insert({
+            business_id: profile.business_id,
+            transaction_type: String(
+              form.get('transaction_type') || 'income',
+            ),
+            amount,
+            transaction_date: date,
+            category: String(
+              form.get('category') || 'general',
+            ),
+            payment_method:
+              String(form.get('payment_method') || '').trim() ||
+              null,
+            reference:
+              String(form.get('reference') || '').trim() || null,
+            notes:
+              String(form.get('notes') || '').trim() || null,
+          });
 
-        if (transactionError) throw transactionError;
+        if (error) throw error;
       }
 
       setOpen(false);
@@ -393,7 +483,9 @@ export function RecordsPage() {
       <header className="records-header">
         <div>
           <span className="eyebrow">BUSINESS RECORDS</span>
+
           <h1>Know where your money is going.</h1>
+
           <p>
             Record sales, expenses and payments as they happen.
             Gideon will use this foundation to turn your business
@@ -411,33 +503,55 @@ export function RecordsPage() {
         </button>
       </header>
 
-      {error && <div className="alert error records-alert">{error}</div>}
+      {error && (
+        <div className="alert error records-alert">
+          {error}
+        </div>
+      )}
 
       <section className="records-actions">
-        <button type="button" className="records-action sale" onClick={() => openCreate('sale')}>
+        <button
+          type="button"
+          className="records-action sale"
+          onClick={() => openCreate('sale')}
+        >
           <RecordIcon kind="sale" />
+
           <span>
             <strong>Add sale</strong>
             <small>Record something you sold</small>
           </span>
+
           <Icon name="arrow" size={16} />
         </button>
 
-        <button type="button" className="records-action expense" onClick={() => openCreate('expense')}>
+        <button
+          type="button"
+          className="records-action expense"
+          onClick={() => openCreate('expense')}
+        >
           <RecordIcon kind="expense" />
+
           <span>
             <strong>Add expense</strong>
             <small>Track money spent by the business</small>
           </span>
+
           <Icon name="arrow" size={16} />
         </button>
 
-        <button type="button" className="records-action payment" onClick={() => openCreate('payment')}>
+        <button
+          type="button"
+          className="records-action payment"
+          onClick={() => openCreate('payment')}
+        >
           <RecordIcon kind="payment" />
+
           <span>
             <strong>Record payment</strong>
             <small>Track money received or paid out</small>
           </span>
+
           <Icon name="arrow" size={16} />
         </button>
       </section>
@@ -445,23 +559,45 @@ export function RecordsPage() {
       <section className="records-summary">
         <div>
           <span>Sales recorded</span>
-          <strong>{formatMoney(totals.salesTotal)}</strong>
-          <small>{sales.length} sale{sales.length === 1 ? '' : 's'}</small>
+
+          <strong>
+            {formatMoney(totals.salesTotal)}
+          </strong>
+
+          <small>
+            {sales.length} sale{sales.length === 1 ? '' : 's'}
+          </small>
         </div>
 
         <div>
           <span>Expenses recorded</span>
-          <strong>{formatMoney(totals.expensesTotal)}</strong>
-          <small>{expenses.length} expense{expenses.length === 1 ? '' : 's'}</small>
+
+          <strong>
+            {formatMoney(totals.expensesTotal)}
+          </strong>
+
+          <small>
+            {expenses.length} expense
+            {expenses.length === 1 ? '' : 's'}
+          </small>
         </div>
 
         <div>
           <span>Cash movement</span>
-          <strong className={totals.cashMovement >= 0 ? 'positive' : 'negative'}>
+
+          <strong
+            className={
+              totals.cashMovement >= 0
+                ? 'positive'
+                : 'negative'
+            }
+          >
             {formatMoney(totals.cashMovement)}
           </strong>
+
           <small>
-            {formatMoney(totals.income)} in · {formatMoney(totals.outgoing)} out
+            {formatMoney(totals.income)} in ·{' '}
+            {formatMoney(totals.outgoing)} out
           </small>
         </div>
       </section>
@@ -475,6 +611,7 @@ export function RecordsPage() {
 
           <div className="records-search">
             <Icon name="search" size={16} />
+
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -496,7 +633,9 @@ export function RecordsPage() {
             </div>
 
             <h3>
-              {timeline.length ? 'No matching records' : 'Your records will appear here'}
+              {timeline.length
+                ? 'No matching records'
+                : 'Your records will appear here'}
             </h3>
 
             <p>
@@ -506,7 +645,11 @@ export function RecordsPage() {
             </p>
 
             {!timeline.length && (
-              <button type="button" className="secondary" onClick={() => openCreate('sale')}>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => openCreate('sale')}
+              >
                 Add your first sale
               </button>
             )}
@@ -514,19 +657,29 @@ export function RecordsPage() {
         ) : (
           <div className="records-list">
             {filtered.map((item) => (
-              <article key={item.id} className="records-row">
+              <article
+                key={item.id}
+                className="records-row"
+              >
                 <RecordIcon kind={item.kind} />
 
                 <div className="records-row-copy">
                   <strong>{item.title}</strong>
+
                   <span>{item.subtitle}</span>
+
                   <small>
                     {formatDate(item.date)}
-                    {item.meta ? <em> · {item.meta}</em> : null}
+
+                    {item.meta ? (
+                      <em> · {item.meta}</em>
+                    ) : null}
                   </small>
                 </div>
 
-                <strong className={`records-amount ${item.direction}`}>
+                <strong
+                  className={`records-amount ${item.direction}`}
+                >
                   {item.direction === 'in' ? '+' : '-'}
                   {formatMoney(item.amount)}
                 </strong>
@@ -540,13 +693,24 @@ export function RecordsPage() {
         <div
           className="modal-backdrop records-modal-backdrop"
           onMouseDown={(e) => {
-            if (e.target === e.currentTarget && !busy) setOpen(false);
+            if (
+              e.target === e.currentTarget &&
+              !busy
+            ) {
+              setOpen(false);
+            }
           }}
         >
-          <form className="modal records-modal" onSubmit={save}>
+          <form
+            className="modal records-modal"
+            onSubmit={save}
+          >
             <div className="modal-head">
               <div>
-                <span className="eyebrow">BUSINESS RECORD</span>
+                <span className="eyebrow">
+                  BUSINESS RECORD
+                </span>
+
                 <h2>
                   {kind === 'sale'
                     ? 'Add a sale'
@@ -554,9 +718,11 @@ export function RecordsPage() {
                     ? 'Add an expense'
                     : 'Record a payment'}
                 </h2>
+
                 <p>
-                  Keep the entry simple now. Gideon can build
-                  deeper analysis as your records grow.
+                  Keep the entry simple now. Gideon can
+                  build deeper analysis as your records
+                  grow.
                 </p>
               </div>
 
@@ -575,44 +741,57 @@ export function RecordsPage() {
               <>
                 <div className="records-form-grid">
                   <label>
-                    Customer name (optional)
-                    <input name="customer_name" type="text" placeholder="Customer or client" />
+                    Customer name
+                    <input
+                      name="customer_name"
+                      placeholder="Optional"
+                      autoComplete="off"
+                    />
                   </label>
 
                   <label>
                     Date
-                    <input name="date" type="datetime-local" />
-                  </label>
-
-                  <label>
-                    Item or service sold
                     <input
-                      name="description"
-                      type="text"
-                      placeholder="e.g. Solar panel installation"
+                      name="date"
+                      type="date"
+                      defaultValue={today}
                       required
                     />
                   </label>
+                </div>
 
+                <label>
+                  What was sold
+                  <input
+                    name="description"
+                    placeholder="e.g. 5 bags of cement"
+                    autoComplete="off"
+                    required
+                  />
+                </label>
+
+                <div className="records-form-grid">
                   <label>
                     Quantity
                     <input
                       name="quantity"
                       type="number"
+                      inputMode="decimal"
                       min="0.001"
-                      step="0.001"
+                      step="any"
                       defaultValue="1"
                       required
                     />
                   </label>
 
                   <label>
-                    Unit price (₦)
+                    Selling price (each)
                     <input
                       name="unit_price"
                       type="number"
+                      inputMode="decimal"
                       min="0"
-                      step="0.01"
+                      step="any"
                       placeholder="0"
                       required
                     />
@@ -620,75 +799,94 @@ export function RecordsPage() {
                 </div>
 
                 <label>
-                  Notes (optional)
-                  <textarea name="notes" rows={3} placeholder="Additional details about this sale" />
+                  Notes
+                  <textarea
+                    name="notes"
+                    rows={3}
+                    placeholder="Optional"
+                  />
                 </label>
               </>
             )}
 
             {kind === 'expense' && (
               <>
+                <label>
+                  What was it for
+                  <input
+                    name="description"
+                    placeholder="e.g. Transport to supplier"
+                    autoComplete="off"
+                    required
+                  />
+                </label>
+
                 <div className="records-form-grid">
                   <label>
-                    Expense description
+                    Amount
                     <input
-                      name="description"
-                      type="text"
-                      placeholder="What was the money spent on?"
+                      name="amount"
+                      type="number"
+                      inputMode="decimal"
+                      min="0"
+                      step="any"
+                      placeholder="0"
                       required
                     />
-                  </label>
-
-                  <label>
-                    Amount (₦)
-                    <input name="amount" type="number" min="0.01" step="0.01" placeholder="0" required />
                   </label>
 
                   <label>
                     Category
                     <select name="category" defaultValue="general">
                       <option value="general">General</option>
+                      <option value="stock">Stock and supplies</option>
                       <option value="transport">Transport</option>
-                      <option value="inventory">Inventory or supplies</option>
-                      <option value="utilities">Utilities</option>
-                      <option value="salary">Salary</option>
                       <option value="rent">Rent</option>
-                      <option value="maintenance">Maintenance</option>
+                      <option value="utilities">Utilities</option>
+                      <option value="salaries">Salaries</option>
                       <option value="marketing">Marketing</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Date
-                    <input name="date" type="datetime-local" />
-                  </label>
-
-                  <label>
-                    Payment status
-                    <select name="payment_status" defaultValue="paid">
-                      <option value="paid">Paid</option>
-                      <option value="unpaid">Unpaid</option>
-                      <option value="partially_paid">Partially paid</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Payment method
-                    <select name="payment_method" defaultValue="">
-                      <option value="">Not specified</option>
-                      <option value="cash">Cash</option>
-                      <option value="bank_transfer">Bank transfer</option>
-                      <option value="pos">POS</option>
-                      <option value="mobile_money">Mobile money</option>
                       <option value="other">Other</option>
                     </select>
                   </label>
                 </div>
 
+                <div className="records-form-grid">
+                  <label>
+                    Payment status
+                    <select name="payment_status" defaultValue="paid">
+                      <option value="paid">Paid</option>
+                      <option value="unpaid">Not paid yet</option>
+                      <option value="partially_paid">Part paid</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Payment method
+                    <input
+                      name="payment_method"
+                      placeholder="e.g. Cash, Transfer"
+                      autoComplete="off"
+                    />
+                  </label>
+                </div>
+
                 <label>
-                  Notes (optional)
-                  <textarea name="notes" rows={3} placeholder="Additional details about this expense" />
+                  Date
+                  <input
+                    name="date"
+                    type="date"
+                    defaultValue={today}
+                    required
+                  />
+                </label>
+
+                <label>
+                  Notes
+                  <textarea
+                    name="notes"
+                    rows={3}
+                    placeholder="Optional"
+                  />
                 </label>
               </>
             )}
@@ -697,56 +895,78 @@ export function RecordsPage() {
               <>
                 <div className="records-form-grid">
                   <label>
-                    Payment type
-                    <select name="transaction_type" defaultValue="income">
+                    Type
+                    <select
+                      name="transaction_type"
+                      defaultValue="income"
+                    >
                       <option value="income">Money received</option>
                       <option value="expense">Money paid out</option>
                     </select>
                   </label>
 
                   <label>
-                    Amount (₦)
-                    <input name="amount" type="number" min="0.01" step="0.01" placeholder="0" required />
+                    Amount
+                    <input
+                      name="amount"
+                      type="number"
+                      inputMode="decimal"
+                      min="0"
+                      step="any"
+                      placeholder="0"
+                      required
+                    />
                   </label>
+                </div>
 
+                <div className="records-form-grid">
                   <label>
                     Category
-                    <select name="category" defaultValue="general">
-                      <option value="general">General</option>
-                      <option value="sales">Sales payment</option>
-                      <option value="service">Service payment</option>
-                      <option value="supplier">Supplier payment</option>
-                      <option value="loan">Loan</option>
-                      <option value="other">Other</option>
-                    </select>
+                    <input
+                      name="category"
+                      defaultValue="general"
+                      autoComplete="off"
+                    />
                   </label>
 
                   <label>
                     Payment method
-                    <select name="payment_method" defaultValue="">
-                      <option value="">Not specified</option>
-                      <option value="cash">Cash</option>
-                      <option value="bank_transfer">Bank transfer</option>
-                      <option value="pos">POS</option>
-                      <option value="mobile_money">Mobile money</option>
-                      <option value="other">Other</option>
-                    </select>
+                    <input
+                      name="payment_method"
+                      placeholder="e.g. Cash, Transfer"
+                      autoComplete="off"
+                    />
+                  </label>
+                </div>
+
+                <div className="records-form-grid">
+                  <label>
+                    Reference
+                    <input
+                      name="reference"
+                      placeholder="Optional"
+                      autoComplete="off"
+                    />
                   </label>
 
                   <label>
                     Date
-                    <input name="date" type="datetime-local" />
-                  </label>
-
-                  <label>
-                    Reference (optional)
-                    <input name="reference" type="text" placeholder="Transaction reference" />
+                    <input
+                      name="date"
+                      type="date"
+                      defaultValue={today}
+                      required
+                    />
                   </label>
                 </div>
 
                 <label>
-                  Notes (optional)
-                  <textarea name="notes" rows={3} placeholder="Additional payment details" />
+                  Notes
+                  <textarea
+                    name="notes"
+                    rows={3}
+                    placeholder="Optional"
+                  />
                 </label>
               </>
             )}
@@ -762,7 +982,7 @@ export function RecordsPage() {
               </button>
 
               <button type="submit" className="primary" disabled={busy}>
-                {busy ? 'Saving...' : 'Save record'}
+                {busy ? 'Saving…' : 'Save record'}
               </button>
             </div>
           </form>
