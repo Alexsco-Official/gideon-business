@@ -7,6 +7,10 @@ import {
 
 import { supabase } from '../../lib/supabase';
 import { errorMessage } from '../../lib/api';
+import {
+  MIN_PASSWORD_LENGTH,
+  siteUrl,
+} from '../../lib/authConfig';
 import { useAuth } from './AuthContext';
 
 function AuthCard({ mode }: { mode: 'login' | 'signup' }) {
@@ -59,8 +63,7 @@ function AuthCard({ mode }: { mode: 'login' | 'signup' }) {
             data: {
               full_name: name,
             },
-            emailRedirectTo:
-              'https://gideon-business.netlify.app/login',
+            emailRedirectTo: `${siteUrl()}/login`,
           },
         });
 
@@ -141,14 +144,28 @@ function AuthCard({ mode }: { mode: 'login' | 'signup' }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={
+                isLogin ? undefined : MIN_PASSWORD_LENGTH
+              }
               autoComplete={
                 isLogin
                   ? 'current-password'
                   : 'new-password'
               }
             />
+
+            {!isLogin && (
+              <small className="muted">
+                Use at least {MIN_PASSWORD_LENGTH} characters.
+              </small>
+            )}
           </label>
+
+          {isLogin && (
+            <Link className="text-link" to="/forgot-password">
+              Forgot your password?
+            </Link>
+          )}
 
           {error && (
             <div className="alert error">
@@ -199,6 +216,16 @@ function AuthCard({ mode }: { mode: 'login' | 'signup' }) {
 
 function NavigateByProfile() {
   const { hasProfile } = useAuth();
+
+  // Wait until we know whether this person already has a workspace,
+  // so existing users are not bounced through onboarding first.
+  if (hasProfile === null) {
+    return (
+      <main className="center">
+        <div className="loader" />
+      </main>
+    );
+  }
 
   return hasProfile ? (
     <Navigate to="/dashboard" replace />
