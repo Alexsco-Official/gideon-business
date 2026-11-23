@@ -6,3 +6,16 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Security headers. Netlify already serves the site over HTTPS only.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    # Report-Only: the browser logs anything it WOULD block, but blocks nothing.
+    # After a clean check of the browser console on every page, rename this
+    # header to Content-Security-Policy to enforce it.
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
