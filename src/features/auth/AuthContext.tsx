@@ -7,14 +7,15 @@ interface AuthState {
   session: Session|null
   user: User|null
   loading: boolean
-  hasProfile: boolean
+  // null means we are still checking
+  hasProfile: boolean | null
 }
 
 const C=createContext<AuthState>({
   session:null,
   user:null,
   loading:true,
-  hasProfile:false
+  hasProfile:null
 })
 
 export function AuthProvider({children}:{children:ReactNode}){
@@ -22,7 +23,7 @@ export function AuthProvider({children}:{children:ReactNode}){
     session:null,
     user:null,
     loading:true,
-    hasProfile:false
+    hasProfile:null
   })
 
   useEffect(()=>{
@@ -31,12 +32,12 @@ export function AuthProvider({children}:{children:ReactNode}){
     supabase.auth.getSession().then(({data})=>{
       if(!mounted)return
 
-      setS({
+      setS(prev=>({
         session:data.session,
         user:data.session?.user??null,
         loading:false,
-        hasProfile:false
-      })
+        hasProfile:data.session?prev.hasProfile:false
+      }))
     })
 
     const {data:{subscription}}=supabase.auth.onAuthStateChange(
@@ -47,7 +48,11 @@ export function AuthProvider({children}:{children:ReactNode}){
           ...prev,
           session,
           user:session?.user??null,
-          loading:false
+          loading:false,
+          // a different person signed in, so check their profile again
+          hasProfile:session
+            ?(prev.session?.user.id===session.user.id?prev.hasProfile:null)
+            :false
         }))
 
         if(session){
