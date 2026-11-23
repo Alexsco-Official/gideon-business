@@ -11,6 +11,10 @@ import {
   SignupPage,
 } from '../features/auth/AuthPages';
 import {
+  ForgotPasswordPage,
+  ResetPasswordPage,
+} from '../features/auth/PasswordPages';
+import {
   ConversationsPage,
   ConversationDetailPage,
 } from '../features/conversations/ConversationsPage';
@@ -39,6 +43,16 @@ export default function App() {
           <Route
             path="/signup"
             element={<SignupPage />}
+          />
+
+          <Route
+            path="/forgot-password"
+            element={<ForgotPasswordPage />}
+          />
+
+          <Route
+            path="/reset-password"
+            element={<ResetPasswordPage />}
           />
 
           <Route
