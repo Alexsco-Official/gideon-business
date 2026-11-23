@@ -1,0 +1,53 @@
+/* Gideon Business design tokens.
+   Three brand colors, one ink family for every surface, and status colors
+   that are used only for meaning. Everything is flat: no gradients, no glow.
+   Change a color here and the whole app follows. */
+
+:root {
+  color-scheme: dark;
+
+  /* ---- The three brand colors ---- */
+  --sapphire: #0042ac; /* primary actions and brand marks. Dominant. */
+  --ocean: #00d9fb; /* links, icons, focus, selected states. Selective. */
+  --jade: #83fd80; /* success and money in. Selective. */
+
+  /* ---- Brand states and tints ---- */
+  --sapphire-hover: #0a52c4;
+  --sapphire-press: #00378f;
+  --sapphire-soft: rgba(0, 66, 172, 0.34); /* selected and active backgrounds */
+  --ocean-soft: rgba(0, 217, 251, 0.1);
+  --ocean-line: rgba(0, 217, 251, 0.38);
+  --jade-soft: rgba(131, 253, 128, 0.1);
+  --jade-line: rgba(131, 253, 128, 0.36);
+
+  /* ---- Ink: every surface ---- */
+  --bg: #0b0f14; /* page */
+  --panel: #111720; /* cards and panels */
+  --panel2: #151c26; /* table headers, subtle areas */
+  --raised: #1b232d; /* hover and raised areas */
+  --line: #26303c; /* borders */
+  --line-strong: #33404e; /* dividers and quiet outlines */
+  --field-line: #5f6e82; /* form field borders: clearly visible (3.5 to 1 on cards) */
+
+  /* ---- Text ---- */
+  --text: #f1f5f9;
+  --muted: #a1b0c2;
+  --faint: #8b99ac; /* placeholders and fine print, still readable */
+  --on-bright: #07101c; /* text placed on Ocean or Jade fills */
+
+  /* ---- Status: functional only ---- */
+  --danger: #ff6b76;
+  --danger-solid: #c42b3a; /* red buttons, with white text */
+  --danger-soft: rgba(255, 107, 118, 0.12);
+  --danger-line: rgba(255, 107, 118, 0.38);
+  --warning: #ffc24d;
+  --warning-soft: rgba(255, 194, 77, 0.12);
+  --warning-line: rgba(255, 194, 77, 0.38);
+
+  /* ---- Older names, kept so any rule still using them keeps working ---- */
+  --accent: var(--sapphire);
+  --accent-hover: var(--sapphire-hover);
+  --accent-soft: var(--sapphire-soft);
+  --accent-border: var(--ocean-line);
+  --accent-text: var(--ocean);
+}
