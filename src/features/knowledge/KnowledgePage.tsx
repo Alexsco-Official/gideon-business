@@ -302,7 +302,6 @@ export function KnowledgePage() {
       title: String(form.get('title') || ''),
       content: String(form.get('content') || ''),
       category: String(form.get('category') || 'General'),
-      active: true,
     }
 
     try {
@@ -320,6 +319,7 @@ export function KnowledgePage() {
           .from('knowledge_items')
           .insert({
             ...payload,
+            active: true,
             business_id: id,
           })
 
