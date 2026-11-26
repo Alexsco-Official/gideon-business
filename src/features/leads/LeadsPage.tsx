@@ -2,6 +2,11 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { errorMessage } from '../../lib/api';
 import { EmptyState, PageHeader } from '../../components/ui';
+import {
+  Bone,
+  CardGridSkeleton,
+  ToolbarSkeleton,
+} from '../../components/skeletons';
 import type { Lead, LeadStatus } from '../../types/database';
 
 const statuses: LeadStatus[] = [
@@ -196,6 +201,7 @@ function LeadCard({
 
 export function LeadsPage() {
   const [items, setItems] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Lead | null>(null);
   const [busy, setBusy] = useState(false);
@@ -215,7 +221,9 @@ export function LeadsPage() {
   }
 
   useEffect(() => {
-    load().catch((e) => setError(errorMessage(e)));
+    load()
+      .catch((e) => setError(errorMessage(e)))
+      .finally(() => setLoading(false));
   }, []);
 
   async function save(e: FormEvent<HTMLFormElement>) {
@@ -317,12 +325,28 @@ export function LeadsPage() {
     setOpen(true);
   }
 
+  // Show the page's outline while the leads load, so the screen never
+  // claims "No leads yet" before it knows.
+  if (loading) {
+    return (
+      <>
+        <PageHeader
+          title="Leads"
+          text="Track enquiries and follow them up until they become customers."
+          action={<Bone width={132} height={42} radius={10} />}
+        />
+
+        <ToolbarSkeleton tabs={6} />
+        <CardGridSkeleton count={6} columns={3} />
+      </>
+    );
+  }
+
   return (
     <>
       <PageHeader
-        eyebrow="LEADS"
-        title="Customer pipeline"
-        text="Keep track of enquiries, follow-ups and opportunities from first contact to conversion."
+        title="Leads"
+        text="Track enquiries and follow them up until they become customers."
         action={
           <button className="primary leads-add-button" onClick={openCreate}>
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
@@ -339,21 +363,6 @@ export function LeadsPage() {
       />
 
       {error && <div className="alert error leads-alert">{error}</div>}
-
-      <section className="lead-overview">
-        <div className="lead-overview-copy">
-          <span className="eyebrow">PIPELINE OVERVIEW</span>
-          <h2>Your customer opportunities</h2>
-          <p>
-            A simple view of where your enquiries currently stand.
-          </p>
-        </div>
-
-        <div className="lead-total">
-          <strong>{counts.all}</strong>
-          <span>Total leads</span>
-        </div>
-      </section>
 
       <section className="lead-summary">
         {(
@@ -495,7 +504,6 @@ export function LeadsPage() {
           <form className="modal lead-modal" onSubmit={save}>
             <div className="modal-head">
               <div>
-                <span className="eyebrow">CUSTOMER LEAD</span>
                 <h2>{editing ? 'Edit lead' : 'Add a new lead'}</h2>
                 <p>
                   {editing
