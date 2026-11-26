@@ -9,6 +9,11 @@ import { errorMessage, getCurrentContext } from '../../lib/api';
 import { supabase } from '../../lib/supabase';
 
 import './inventory.css';
+import {
+  ListRowsSkeleton,
+  StatCardsSkeleton,
+  TableSkeleton,
+} from '../../components/skeletons';
 
 type Product = {
   id: string;
@@ -555,15 +560,10 @@ export function InventoryPage() {
     <section className="inventory-page">
       <header className="inventory-header">
         <div>
-          <span className="inventory-eyebrow">
-            STOCK CONTROL
-          </span>
-
           <h1>Inventory</h1>
 
           <p>
-            Track stock received, adjustments and movement
-            history across your inventory-managed products.
+            Track stock levels and every stock movement.
           </p>
         </div>
 
@@ -590,55 +590,59 @@ export function InventoryPage() {
         </div>
       )}
 
-      <div className="inventory-stats">
-        <article className="inventory-stat">
-          <div className="inventory-stat-icon">
-            <MovementIcon name="box" />
-          </div>
+      {loading ? (
+        <StatCardsSkeleton count={4} />
+      ) : (
+        <div className="inventory-stats">
+          <article className="inventory-stat">
+            <div className="inventory-stat-icon">
+              <MovementIcon name="box" />
+            </div>
 
-          <div>
-            <span>Tracked products</span>
-            <strong>{stats.products}</strong>
-            <small>{stats.activeTracked} active</small>
-          </div>
-        </article>
+            <div>
+              <span>Tracked products</span>
+              <strong>{stats.products}</strong>
+              <small>{stats.activeTracked} active</small>
+            </div>
+          </article>
 
-        <article className="inventory-stat">
-          <div className="inventory-stat-icon">
-            <MovementIcon name="history" />
-          </div>
+          <article className="inventory-stat">
+            <div className="inventory-stat-icon">
+              <MovementIcon name="history" />
+            </div>
 
-          <div>
-            <span>Total stock units</span>
-            <strong>{formatQuantity(stats.totalUnits)}</strong>
-            <small>Across tracked products</small>
-          </div>
-        </article>
+            <div>
+              <span>Total stock units</span>
+              <strong>{formatQuantity(stats.totalUnits)}</strong>
+              <small>Across tracked products</small>
+            </div>
+          </article>
 
-        <article className="inventory-stat">
-          <div className="inventory-stat-icon warning">
-            <MovementIcon name="box" />
-          </div>
+          <article className="inventory-stat">
+            <div className="inventory-stat-icon warning">
+              <MovementIcon name="box" />
+            </div>
 
-          <div>
-            <span>Out of stock</span>
-            <strong>{stats.outOfStock}</strong>
-            <small>Products at zero or below</small>
-          </div>
-        </article>
+            <div>
+              <span>Out of stock</span>
+              <strong>{stats.outOfStock}</strong>
+              <small>Products at zero or below</small>
+            </div>
+          </article>
 
-        <article className="inventory-stat">
-          <div className="inventory-stat-icon danger">
-            <MovementIcon name="box" />
-          </div>
+          <article className="inventory-stat">
+            <div className="inventory-stat-icon danger">
+              <MovementIcon name="box" />
+            </div>
 
-          <div>
-            <span>Negative stock</span>
-            <strong>{stats.negativeStock}</strong>
-            <small>Records needing review</small>
-          </div>
-        </article>
-      </div>
+            <div>
+              <span>Negative stock</span>
+              <strong>{stats.negativeStock}</strong>
+              <small>Records needing review</small>
+            </div>
+          </article>
+        </div>
+      )}
 
       <div className="inventory-toolbar">
         <label className="inventory-search">
@@ -678,10 +682,7 @@ export function InventoryPage() {
         </div>
 
         {loading ? (
-          <div className="inventory-empty">
-            <div className="inventory-loader" />
-            <p>Calculating stock levels…</p>
-          </div>
+          <TableSkeleton rows={4} cols={5} withPanel={false} />
         ) : products.length === 0 ? (
           <div className="inventory-empty">
             <div className="inventory-empty-icon">
@@ -825,9 +826,7 @@ export function InventoryPage() {
         </div>
 
         {loading ? (
-          <div className="inventory-empty">
-            <p>Loading movement history…</p>
-          </div>
+          <ListRowsSkeleton rows={4} withPanel={false} />
         ) : visibleMovements.length === 0 ? (
           <div className="inventory-empty">
             <div className="inventory-empty-icon">
@@ -928,10 +927,6 @@ export function InventoryPage() {
           >
             <div className="inventory-modal-heading">
               <div>
-                <span className="inventory-eyebrow">
-                  STOCK CONTROL
-                </span>
-
                 <h2 id="inventory-modal-title">
                   Record inventory movement
                 </h2>
