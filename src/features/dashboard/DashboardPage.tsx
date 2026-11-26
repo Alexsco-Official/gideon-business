@@ -3,22 +3,36 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { getCurrentContext, errorMessage } from '../../lib/api';
 import { EmptyState, PageHeader } from '../../components/ui';
-import type { Business, AgentLog } from '../../types/database';
+import { DashboardSkeleton } from '../../components/skeletons';
+import type {
+  Business,
+  AgentLog,
+  Profile,
+} from '../../types/database';
+import './dashboard.css';
 
 type Counts = {
   leads: number;
   open: number;
   knowledge: number;
+  products: number;
+  sales: number;
+};
+
+const emptyCounts: Counts = {
+  leads: 0,
+  open: 0,
+  knowledge: 0,
+  products: 0,
+  sales: 0,
 };
 
 export function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
-  const [counts, setCounts] = useState<Counts>({
-    leads: 0,
-    open: 0,
-    knowledge: 0,
-  });
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [counts, setCounts] = useState<Counts>(emptyCounts);
   const [logs, setLogs] = useState<AgentLog[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -31,35 +45,52 @@ export function DashboardPage() {
         if (!mounted) return;
 
         setBusiness(context?.business ?? null);
+        setProfile((context?.profile ?? null) as Profile | null);
 
         if (!context?.business) return;
 
-        const [leads, conversations, knowledge, activity] =
-          await Promise.all([
-            supabase
-              .from('leads')
-              .select('id', { count: 'exact', head: true }),
+        const [
+          leads,
+          conversations,
+          knowledge,
+          products,
+          sales,
+          activity,
+        ] = await Promise.all([
+          supabase
+            .from('leads')
+            .select('id', { count: 'exact', head: true }),
 
-            supabase
-              .from('conversations')
-              .select('id', { count: 'exact', head: true })
-              .eq('status', 'open'),
+          supabase
+            .from('conversations')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'open'),
 
-            supabase
-              .from('knowledge_items')
-              .select('id', { count: 'exact', head: true }),
+          supabase
+            .from('knowledge_items')
+            .select('id', { count: 'exact', head: true }),
 
-            supabase
-              .from('agent_logs')
-              .select('*')
-              .order('created_at', { ascending: false })
-              .limit(5),
-          ]);
+          supabase
+            .from('products')
+            .select('id', { count: 'exact', head: true }),
+
+          supabase
+            .from('sales')
+            .select('id', { count: 'exact', head: true }),
+
+          supabase
+            .from('agent_logs')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(5),
+        ]);
 
         for (const result of [
           leads,
           conversations,
           knowledge,
+          products,
+          sales,
           activity,
         ]) {
           if (result.error) throw result.error;
@@ -71,12 +102,18 @@ export function DashboardPage() {
           leads: leads.count ?? 0,
           open: conversations.count ?? 0,
           knowledge: knowledge.count ?? 0,
+          products: products.count ?? 0,
+          sales: sales.count ?? 0,
         });
 
         setLogs((activity.data ?? []) as AgentLog[]);
       } catch (e) {
         if (mounted) {
           setError(errorMessage(e));
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
         }
       }
     })();
@@ -86,19 +123,47 @@ export function DashboardPage() {
     };
   }, []);
 
-  const totalSignals =
-    counts.leads + counts.open + counts.knowledge;
+  // The page frame is already on screen, so show the page's outline
+  // while the numbers load instead of misleading zeros.
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
+
+  const firstName = profile?.full_name
+    ?.trim()
+    .split(/\s+/)[0];
+
+  const steps = [
+    {
+      label: 'Add your products and services',
+      done: counts.products > 0,
+      href: '/products',
+    },
+    {
+      label: 'Record your first sale',
+      done: counts.sales > 0,
+      href: '/records',
+    },
+    {
+      label: 'Add a lead',
+      done: counts.leads > 0,
+      href: '/leads',
+    },
+    {
+      label: 'Add business knowledge',
+      done: counts.knowledge > 0,
+      href: '/knowledge',
+    },
+  ];
+
+  const doneCount = steps.filter((step) => step.done).length;
+  const allDone = doneCount === steps.length;
 
   return (
     <>
       <PageHeader
-        eyebrow="COMMAND CENTER"
-        title={
-          business
-            ? `Good morning, ${business.name}.`
-            : 'Dashboard'
-        }
-        text="A clear view of the work moving through your business."
+        title="Dashboard"
+        text={`Welcome back${firstName ? `, ${firstName}` : ''}. Here is what is happening in ${business?.name ?? 'your business'}.`}
       />
 
       {error && (
@@ -106,31 +171,6 @@ export function DashboardPage() {
           {error}
         </div>
       )}
-
-      <section className="dashboard-intro">
-        <div>
-          <span className="eyebrow">BUSINESS PULSE</span>
-
-          <h2>Your workspace at a glance.</h2>
-
-          <p>
-            Gideon is connected to your workspace and ready to
-            organize the information that matters to your business.
-          </p>
-        </div>
-
-        <div className="workspace-status">
-          <span className="status-indicator" />
-          <div>
-            <strong>Workspace active</strong>
-            <small>
-              {totalSignals === 0
-                ? 'Ready for your first records'
-                : `${totalSignals} recorded business signals`}
-            </small>
-          </div>
-        </div>
-      </section>
 
       <section className="stat-grid dashboard-stats">
         <Stat
@@ -144,7 +184,7 @@ export function DashboardPage() {
         <Stat
           label="Open conversations"
           value={counts.open}
-          description="Conversations requiring attention"
+          description="Waiting for a reply"
           href="/conversations"
           icon={<ChatIcon />}
         />
@@ -152,19 +192,22 @@ export function DashboardPage() {
         <Stat
           label="Knowledge"
           value={counts.knowledge}
-          description="Business information Gideon can use"
+          description="Items your assistant can use"
           href="/knowledge"
           icon={<BookIcon />}
         />
       </section>
 
-      <section className="dashboard-main-grid">
+      <section
+        className={
+          allDone
+            ? 'dashboard-main-grid single'
+            : 'dashboard-main-grid'
+        }
+      >
         <div className="panel dashboard-activity">
           <div className="panel-head">
-            <div>
-              <span className="eyebrow">RECENT ACTIVITY</span>
-              <h2>What is happening</h2>
-            </div>
+            <h2>Recent activity</h2>
 
             {logs.length > 0 && (
               <span className="panel-count">
@@ -198,72 +241,47 @@ export function DashboardPage() {
           ) : (
             <EmptyState
               title="No activity yet"
-              text="Gideon will surface useful business activity here as your workspace grows."
+              text="Activity from your workspace will appear here."
             />
           )}
         </div>
 
-        <div className="dashboard-side">
-          <div className="panel foundation-card">
-            <span className="eyebrow">GIDEON FOUNDATION</span>
+        {!allDone && (
+          <div className="panel getting-started">
+            <h2>Getting started</h2>
 
-            <h2>Build the business context.</h2>
-
-            <p>
-              The more useful information you add, the more useful
-              Gideon becomes across your future business workflows.
+            <p className="muted">
+              {doneCount} of {steps.length} steps done
             </p>
 
-            <div className="foundation-items">
-              <FoundationItem
-                label="Leads"
-                value={counts.leads}
-                href="/leads"
-              />
+            <div className="checklist">
+              {steps.map((step) => (
+                <Link
+                  key={step.href}
+                  to={step.href}
+                  className={
+                    step.done
+                      ? 'check-item done'
+                      : 'check-item'
+                  }
+                >
+                  <span
+                    className="check-box"
+                    aria-hidden="true"
+                  >
+                    {step.done && <CheckIcon />}
+                  </span>
 
-              <FoundationItem
-                label="Open conversations"
-                value={counts.open}
-                href="/conversations"
-              />
+                  <span className="check-label">
+                    {step.label}
+                  </span>
 
-              <FoundationItem
-                label="Knowledge"
-                value={counts.knowledge}
-                href="/knowledge"
-              />
-            </div>
-
-            <Link
-              className="dashboard-action"
-              to="/knowledge"
-            >
-              Manage business knowledge
-              <ArrowIcon />
-            </Link>
-          </div>
-
-          <div className="panel workflow-card">
-            <span className="eyebrow">OPERATING FLOW</span>
-
-            <h2>From enquiry to completed job.</h2>
-
-            <p>
-              Gideon's foundation is designed to eventually connect
-              the different stages of running a business.
-            </p>
-
-            <div className="workflow">
-              <span>Enquiry</span>
-              <i>→</i>
-              <span>Quote</span>
-              <i>→</i>
-              <span>Job</span>
-              <i>→</i>
-              <span>Payment</span>
+                  <ArrowIcon />
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
+        )}
       </section>
     </>
   );
@@ -297,26 +315,6 @@ function Stat({
       <strong>{value}</strong>
 
       <small>{description}</small>
-    </Link>
-  );
-}
-
-function FoundationItem({
-  label,
-  value,
-  href,
-}: {
-  label: string;
-  value: number;
-  href: string;
-}) {
-  return (
-    <Link to={href} className="foundation-item">
-      <span>{label}</span>
-
-      <strong>{value}</strong>
-
-      <ArrowIcon />
     </Link>
   );
 }
@@ -429,6 +427,26 @@ function ActivityIcon() {
         d="M3 10h3l2-5 3.5 10 2-5H17"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      width="12"
+      height="12"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4.5 10.5l3.5 3.5 7.5-8"
+        stroke="currentColor"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
