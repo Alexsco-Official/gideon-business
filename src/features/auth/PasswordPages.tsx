@@ -30,8 +30,6 @@ function AuthShell({
       </div>
 
       <section className="auth-card">
-        <span className="eyebrow">ACCOUNT</span>
-
         <h1>{title}</h1>
 
         <p className="muted">{intro}</p>
