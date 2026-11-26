@@ -1,0 +1,207 @@
+/* Loading outlines. They are flat gray shapes in the same positions as the
+   real page, so people see the layout before the data arrives. No shimmer
+   gradient: a calm fade only, and none at all if the person prefers less
+   motion. */
+
+.sk {
+  display: block;
+  border-radius: 8px;
+  background: var(--raised);
+  animation: sk-fade 1.6s ease-in-out infinite;
+}
+
+@keyframes sk-fade {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk {
+    animation: none;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sk-page {
+  width: 100%;
+}
+
+.sk-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.sk-header-text {
+  display: grid;
+  gap: 12px;
+  flex: 1;
+}
+
+.sk-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.sk-stats.four {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.sk-card {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+
+.sk-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sk-toolbar .sk-search {
+  flex: 1;
+}
+
+.sk-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.sk-tabs .sk {
+  height: 36px;
+  width: 96px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sk-panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.sk-panel-head {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sk-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sk-row:last-child {
+  border-bottom: 0;
+}
+
+.sk-row-text {
+  display: grid;
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sk-table-row {
+  display: grid;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sk-table-row:last-child {
+  border-bottom: 0;
+}
+
+.sk-table-row.head {
+  background: var(--panel2);
+}
+
+.sk-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.sk-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sk-grid.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.sk-main-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 18px;
+}
+
+.sk-form {
+  display: grid;
+  gap: 18px;
+  max-width: 760px;
+}
+
+.sk-field {
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .sk-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sk-header .sk-action {
+    width: 100% !important;
+  }
+
+  .sk-stats,
+  .sk-grid.cols-3,
+  .sk-grid.cols-2,
+  .sk-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sk-stats.four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sk-table-row .hide-small {
+    display: none;
+  }
+}
