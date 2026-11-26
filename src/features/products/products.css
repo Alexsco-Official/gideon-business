@@ -13,15 +13,6 @@
   margin-bottom: 28px;
 }
 
-.products-eyebrow {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: var(--ocean);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-}
-
 .products-header h1 {
   margin: 0;
   color: var(--text);
@@ -393,7 +384,6 @@
 
 /* Loading / Empty */
 
-.products-loading,
 .products-empty {
   min-height: 330px;
   display: flex;
@@ -404,21 +394,6 @@
   border: 1px dashed var(--line-strong);
   border-radius: 18px;
   text-align: center;
-}
-
-.products-loading {
-  gap: 12px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.products-loader {
-  width: 28px;
-  height: 28px;
-  border: 3px solid var(--line);
-  border-top-color: var(--ocean-line);
-  border-radius: 50%;
-  animation: products-spin 750ms linear infinite;
 }
 
 .products-empty-icon {
@@ -728,20 +703,12 @@
 @media (prefers-reduced-motion: reduce) {
   .products-primary-button,
   .product-card,
-  .products-card-actions button,
   .products-close,
-  .products-loader,
   .products-modal {
     transition: none;
     animation: none;
   }
   }
-
-/* The header sits on the dark app background, so it uses the app's
-   light text colors. */
-.products-eyebrow {
-  color: var(--ocean);
-}
 
 .products-header p {
   color: var(--muted);
@@ -749,7 +716,7 @@
 
 /* Loading and empty states sit on the dark background too, so they
    get the same white card as the rest of the page. */
-.products-loading,
+
 .products-empty {
   border: 1px solid var(--line);
   border-radius: 17px;
