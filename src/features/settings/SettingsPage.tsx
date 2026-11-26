@@ -9,6 +9,7 @@ import {
 } from '../../lib/api'
 import { supabase } from '../../lib/supabase'
 import { PageHeader } from '../../components/ui'
+import { SettingsSkeleton } from '../../components/skeletons'
 import type { Business } from '../../types/database'
 
 function BuildingIcon() {
@@ -147,7 +148,7 @@ export function SettingsPage() {
             {error}
           </div>
         ) : (
-          <div className="loader" />
+          <SettingsSkeleton />
         )}
       </div>
     )
@@ -156,9 +157,8 @@ export function SettingsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="SETTINGS"
-        title="Business settings"
-        text="Keep Gideon's operating profile accurate as your business grows."
+        title="Settings"
+        text="Manage your business profile."
       />
 
       {error && (
@@ -206,10 +206,6 @@ export function SettingsPage() {
           <section className="settings-section">
             <div className="settings-section-head">
               <div>
-                <span className="eyebrow">
-                  BUSINESS PROFILE
-                </span>
-
                 <h2>Business information</h2>
 
                 <p>
@@ -311,10 +307,6 @@ export function SettingsPage() {
           <section className="settings-section settings-account">
             <div className="settings-section-head">
               <div>
-                <span className="eyebrow">
-                  ACCOUNT
-                </span>
-
                 <h2>Account access</h2>
 
                 <p>
@@ -358,10 +350,6 @@ export function SettingsPage() {
             </div>
 
             <div>
-              <span className="eyebrow">
-                GIDEON FOUNDATION
-              </span>
-
               <h3>
                 Your business profile is the context
                 layer.
