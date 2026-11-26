@@ -1,0 +1,40 @@
+/* One standard page heading across the app: the page name, one plain line
+   under it, and the main action on the right. */
+
+.content .page-header,
+.content .records-header,
+.content .products-header,
+.content .inventory-header {
+  margin-bottom: 24px;
+}
+
+.content .page-header h1,
+.content .records-header h1,
+.content .products-header h1,
+.content .inventory-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.content .page-header p,
+.content .records-header p,
+.content .products-header p,
+.content .inventory-header p {
+  max-width: 62ch;
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .content .page-header h1,
+  .content .records-header h1,
+  .content .products-header h1,
+  .content .inventory-header h1 {
+    font-size: 24px;
+  }
+}
