@@ -11,6 +11,7 @@ import {
   getCurrentContext,
 } from '../../lib/api';
 import './products.css';
+import { CardGridSkeleton } from '../../components/skeletons';
 
 type Product = {
   id: string;
@@ -329,16 +330,10 @@ export function ProductsPage() {
     <section className="products-page">
       <div className="products-header">
         <div>
-          <span className="products-eyebrow">
-            BUSINESS CATALOG
-          </span>
-
           <h1>Products & Services</h1>
 
           <p>
-            Keep your products and services organized
-            so Gideon can understand what your business
-            sells.
+            Add and manage what your business sells.
           </p>
         </div>
 
@@ -434,10 +429,7 @@ export function ProductsPage() {
 
       <div className="products-list">
         {loading ? (
-          <div className="products-loading">
-            <div className="products-loader" />
-            <span>Loading your catalog...</span>
-          </div>
+          <CardGridSkeleton count={6} columns={3} />
         ) : filteredProducts.length === 0 ? (
           <div className="products-empty">
             <div className="products-empty-icon">
@@ -623,12 +615,6 @@ export function ProductsPage() {
           >
             <div className="products-modal-header">
               <div>
-                <span className="products-eyebrow">
-                  {editingProduct
-                    ? 'EDIT ITEM'
-                    : 'NEW ITEM'}
-                </span>
-
                 <h2 id="product-modal-title">
                   {editingProduct
                     ? 'Update catalog item'
