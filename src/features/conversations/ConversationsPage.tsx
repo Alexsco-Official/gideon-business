@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { errorMessage } from '../../lib/api'
 import { EmptyState, PageHeader } from '../../components/ui'
+import { ListRowsSkeleton } from '../../components/skeletons'
 import type { Conversation, Message, Lead } from '../../types/database'
 
 type ConversationWithLead = Conversation & {
@@ -292,9 +293,8 @@ export function ConversationsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="CONVERSATIONS"
-        title="Customer conversations"
-        text="Keep customer conversations organized and ready for action."
+        title="Conversations"
+        text="Read and reply to your customers' messages."
         action={
           <button className="primary" onClick={create}>
             New conversation
@@ -359,10 +359,7 @@ export function ConversationsPage() {
       </section>
 
       {loading ? (
-        <div className="conversation-loading">
-          <div className="loader" />
-          <p>Loading conversations...</p>
-        </div>
+        <ListRowsSkeleton rows={5} />
       ) : !items.length ? (
         <div className="conversation-empty">
           <div className="conversation-empty-icon">
