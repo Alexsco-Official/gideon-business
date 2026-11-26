@@ -19,6 +19,7 @@ import type {
 } from '../types/database';
 
 import './mobile-nav.css';
+import { Bone, RouteSkeleton } from '../components/skeletons';
 
 type IconProps = {
   size?: number;
@@ -172,19 +173,9 @@ export function ProtectedLayout() {
     };
   }, [moreOpen]);
 
-  if (loading || !ctx) {
-    return (
-      <main className="center">
-        {error ? (
-          <div className="alert error">
-            {error}
-          </div>
-        ) : (
-          <div className="loader" />
-        )}
-      </main>
-    );
-  }
+  // The menu and page frame show straight away. Until the account has
+  // loaded, the page area shows a gray outline of the page being opened.
+  const ready = !loading && ctx !== null;
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -201,7 +192,7 @@ export function ProtectedLayout() {
   );
 
   const initials =
-    ctx.business.name
+    ctx?.business.name
       .trim()
       .charAt(0)
       .toUpperCase() || 'G';
@@ -258,19 +249,32 @@ export function ProtectedLayout() {
 
         <div className="sidebar-bottom">
           <div className="workspace-card">
-            <div className="workspace-avatar">
-              {initials}
-            </div>
+            {ctx ? (
+              <>
+                <div className="workspace-avatar">
+                  {initials}
+                </div>
 
-            <div className="workspace-copy">
-              <strong>{ctx.business.name}</strong>
+                <div className="workspace-copy">
+                  <strong>{ctx.business.name}</strong>
 
-              <span>
-                {ctx.profile.full_name ||
-                  ctx.profile.role ||
-                  'Workspace owner'}
-              </span>
-            </div>
+                  <span>
+                    {ctx.profile.full_name ||
+                      ctx.profile.role ||
+                      'Workspace owner'}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <Bone width={36} height={36} radius={10} />
+
+                <div className="workspace-copy">
+                  <Bone width={96} height={12} />
+                  <Bone width={64} height={10} />
+                </div>
+              </>
+            )}
           </div>
 
           <button
@@ -307,7 +311,13 @@ export function ProtectedLayout() {
       </div>
 
       <main className="content">
-        <Outlet />
+        {ready ? (
+          <Outlet />
+        ) : error ? (
+          <div className="alert error">{error}</div>
+        ) : (
+          <RouteSkeleton pathname={location.pathname} />
+        )}
       </main>
 
       <nav
