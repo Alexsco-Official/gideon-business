@@ -2,6 +2,10 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { errorMessage } from '../../lib/api';
 import './records.css';
+import {
+  ListRowsSkeleton,
+  StatCardsSkeleton,
+} from '../../components/skeletons';
 
 type RecordKind = 'sale' | 'expense' | 'payment';
 
@@ -482,25 +486,39 @@ export function RecordsPage() {
     <div className="records-page">
       <header className="records-header">
         <div>
-          <span className="eyebrow">BUSINESS RECORDS</span>
-
-          <h1>Know where your money is going.</h1>
+          <h1>Records</h1>
 
           <p>
-            Record sales, expenses and payments as they happen.
-            Gideon will use this foundation to turn your business
-            activity into useful intelligence.
+            Record and review your sales, expenses and payments.
           </p>
         </div>
 
-        <button
-          type="button"
-          className="primary records-main-action"
-          onClick={() => openCreate('sale')}
-        >
-          <Icon name="plus" size={17} />
-          Add record
-        </button>
+        <div className="records-header-actions">
+          <button
+            type="button"
+            className="primary records-main-action"
+            onClick={() => openCreate('sale')}
+          >
+            <Icon name="plus" size={17} />
+            Add sale
+          </button>
+
+          <button
+            type="button"
+            className="records-header-secondary"
+            onClick={() => openCreate('expense')}
+          >
+            Add expense
+          </button>
+
+          <button
+            type="button"
+            className="records-header-secondary"
+            onClick={() => openCreate('payment')}
+          >
+            Record payment
+          </button>
+        </div>
       </header>
 
       {error && (
@@ -509,104 +527,60 @@ export function RecordsPage() {
         </div>
       )}
 
-      <section className="records-actions">
-        <button
-          type="button"
-          className="records-action sale"
-          onClick={() => openCreate('sale')}
-        >
-          <RecordIcon kind="sale" />
+      {loading ? (
+        <StatCardsSkeleton count={3} />
+      ) : (
+        <section className="records-summary">
+          <div>
+            <span>Sales recorded</span>
 
-          <span>
-            <strong>Add sale</strong>
-            <small>Record something you sold</small>
-          </span>
+            <strong>
+              {formatMoney(totals.salesTotal)}
+            </strong>
 
-          <Icon name="arrow" size={16} />
-        </button>
+            <small>
+              {sales.length} sale{sales.length === 1 ? '' : 's'}
+            </small>
+          </div>
 
-        <button
-          type="button"
-          className="records-action expense"
-          onClick={() => openCreate('expense')}
-        >
-          <RecordIcon kind="expense" />
+          <div>
+            <span>Expenses recorded</span>
 
-          <span>
-            <strong>Add expense</strong>
-            <small>Track money spent by the business</small>
-          </span>
+            <strong>
+              {formatMoney(totals.expensesTotal)}
+            </strong>
 
-          <Icon name="arrow" size={16} />
-        </button>
+            <small>
+              {expenses.length} expense
+              {expenses.length === 1 ? '' : 's'}
+            </small>
+          </div>
 
-        <button
-          type="button"
-          className="records-action payment"
-          onClick={() => openCreate('payment')}
-        >
-          <RecordIcon kind="payment" />
+          <div>
+            <span>Cash movement</span>
 
-          <span>
-            <strong>Record payment</strong>
-            <small>Track money received or paid out</small>
-          </span>
+            <strong
+              className={
+                totals.cashMovement >= 0
+                  ? 'positive'
+                  : 'negative'
+              }
+            >
+              {formatMoney(totals.cashMovement)}
+            </strong>
 
-          <Icon name="arrow" size={16} />
-        </button>
-      </section>
-
-      <section className="records-summary">
-        <div>
-          <span>Sales recorded</span>
-
-          <strong>
-            {formatMoney(totals.salesTotal)}
-          </strong>
-
-          <small>
-            {sales.length} sale{sales.length === 1 ? '' : 's'}
-          </small>
-        </div>
-
-        <div>
-          <span>Expenses recorded</span>
-
-          <strong>
-            {formatMoney(totals.expensesTotal)}
-          </strong>
-
-          <small>
-            {expenses.length} expense
-            {expenses.length === 1 ? '' : 's'}
-          </small>
-        </div>
-
-        <div>
-          <span>Cash movement</span>
-
-          <strong
-            className={
-              totals.cashMovement >= 0
-                ? 'positive'
-                : 'negative'
-            }
-          >
-            {formatMoney(totals.cashMovement)}
-          </strong>
-
-          <small>
-            {formatMoney(totals.income)} in ·{' '}
-            {formatMoney(totals.outgoing)} out
-          </small>
-        </div>
-      </section>
+            <small>
+              {formatMoney(totals.income)} in ·{' '}
+              {formatMoney(totals.outgoing)} out
+            </small>
+          </div>
+        </section>
+      )}
 
       <section className="records-list-panel">
         <div className="records-list-head">
           <div>
-            <span className="eyebrow">ACTIVITY</span>
-            <h2>Recent business records</h2>
+            <h2>Recent records</h2>
           </div>
 
           <div className="records-search">
@@ -622,10 +596,7 @@ export function RecordsPage() {
         </div>
 
         {loading ? (
-          <div className="records-loading">
-            <div className="loader" />
-            <span>Loading your records…</span>
-          </div>
+          <ListRowsSkeleton rows={5} withPanel={false} />
         ) : !filtered.length ? (
           <div className="records-empty">
             <div className="records-empty-icon">
@@ -707,10 +678,6 @@ export function RecordsPage() {
           >
             <div className="modal-head">
               <div>
-                <span className="eyebrow">
-                  BUSINESS RECORD
-                </span>
-
                 <h2>
                   {kind === 'sale'
                     ? 'Add a sale'
