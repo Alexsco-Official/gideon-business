@@ -9,6 +9,11 @@ import {
 import { supabase } from '../../lib/supabase'
 import { errorMessage } from '../../lib/api'
 import { EmptyState, PageHeader } from '../../components/ui'
+import {
+  Bone,
+  ListRowsSkeleton,
+  ToolbarSkeleton,
+} from '../../components/skeletons'
 import type { KnowledgeItem } from '../../types/database'
 
 const cats = [
@@ -230,6 +235,7 @@ export function KnowledgePage() {
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
@@ -285,9 +291,9 @@ export function KnowledgePage() {
   }
 
   useEffect(() => {
-    Promise.all([load(), loadFiles()]).catch((e) =>
-      setError(errorMessage(e)),
-    )
+    Promise.all([load(), loadFiles()])
+      .catch((e) => setError(errorMessage(e)))
+      .finally(() => setLoading(false))
   }, [])
 
   async function save(e: FormEvent<HTMLFormElement>) {
@@ -501,12 +507,33 @@ export function KnowledgePage() {
     })
   }, [items, search, category, filter])
 
+  // Show the page's outline while the items load, so the screen never
+  // says "No knowledge yet" before it knows.
+  if (loading) {
+    return (
+      <>
+        <PageHeader
+          title="Knowledge"
+          text="Information your assistant uses to answer customers: facts, policies and documents."
+          action={
+            <div className="knowledge-header-actions">
+              <Bone width={132} height={42} radius={10} />
+              <Bone width={132} height={42} radius={10} />
+            </div>
+          }
+        />
+
+        <ToolbarSkeleton tabs={4} />
+        <ListRowsSkeleton rows={5} />
+      </>
+    )
+  }
+
   return (
     <>
       <PageHeader
-        eyebrow="KNOWLEDGE"
-        title="Teach Gideon."
-        text="Give Gideon the facts, services, policies and business documents it needs to understand your business."
+        title="Knowledge"
+        text="Information your assistant uses to answer customers: facts, policies and documents."
         action={
           <div className="knowledge-header-actions">
             <label className="secondary knowledge-upload-button">
@@ -579,10 +606,6 @@ export function KnowledgePage() {
       <section className="knowledge-files-panel">
         <div className="knowledge-section-head">
           <div>
-            <span className="eyebrow">
-              BUSINESS DOCUMENTS
-            </span>
-
             <h2>Uploaded files</h2>
 
             <p>
@@ -847,12 +870,6 @@ export function KnowledgePage() {
           >
             <div className="modal-head">
               <div>
-                <span className="eyebrow">
-                  {editing
-                    ? 'EDIT KNOWLEDGE'
-                    : 'NEW KNOWLEDGE'}
-                </span>
-
                 <h2>
                   {editing
                     ? 'Update knowledge'
