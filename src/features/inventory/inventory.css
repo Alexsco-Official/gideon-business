@@ -14,15 +14,6 @@
   margin-bottom: 28px;
 }
 
-.inventory-eyebrow {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: var(--ocean);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-}
-
 .inventory-header h1 {
   margin: 0;
   color: var(--text);
@@ -478,16 +469,6 @@
   color: var(--muted);
   font-size: 12px;
   line-height: 1.65;
-}
-
-.inventory-loader {
-  width: 28px;
-  height: 28px;
-  margin-bottom: 12px;
-  border: 3px solid var(--line);
-  border-top-color: var(--ocean-line);
-  border-radius: 50%;
-  animation: inventory-spin 700ms linear infinite;
 }
 
 @keyframes inventory-spin {
